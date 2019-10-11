@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="180px"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/imageViewSearchResult"
+        android:layout_width="60dp"
+        android:layout_height="53dp"
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/ic_launcher_foreground" />
+
+    <TextView
+        android:id="@+id/textViewSearchResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/imageViewSearchResult"
+        android:text="TextView" />
+
+    <Button
+        android:id="@+id/textAddSearchResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:text="Add"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/colorAccent" />
+
+    <TextView
+        android:id="@+id/textYearGroupSearchResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewSearchResult"
+        android:layout_toEndOf="@id/imageViewSearchResult"
+        android:layout_toRightOf="@id/imageViewSearchResult"
+        android:text="Small Text"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#666" />
+
+    <TextView
+        android:id="@+id/textShowStatusSearchResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textYearGroupSearchResult"
+        android:layout_toRightOf="@id/imageViewSearchResult"
+        android:text="sd"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#666" />
+</RelativeLayout>
