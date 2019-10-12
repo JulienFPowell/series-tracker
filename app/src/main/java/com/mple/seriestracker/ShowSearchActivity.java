@@ -23,8 +23,6 @@ import com.mple.seriestracker.api.episodate.entities.SearchResult;
 import com.mple.seriestracker.api.episodate.entities.ShowSearchResult;
 import com.squareup.picasso.Picasso;
 
-import org.threeten.bp.OffsetDateTime;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -96,8 +94,8 @@ public class ShowSearchActivity extends AppCompatActivity {
             holder.textShowName.setText(showInfo.showName);
             holder.textShowStatus.setText(showInfo.showGenres);
             holder.textShowYear.setText(showInfo.showYear);
-
             holder.buttonAddShow.setOnClickListener(new View.OnClickListener() {
+
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent();

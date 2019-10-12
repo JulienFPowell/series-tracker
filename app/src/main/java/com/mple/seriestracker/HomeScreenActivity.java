@@ -16,7 +16,9 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.jakewharton.threetenabp.AndroidThreeTen;
+import com.mple.seriestracker.fragments.CountdownFragment;
 import com.mple.seriestracker.fragments.SectionsPagerAdapter;
+import com.mple.seriestracker.fragments.MyShowsFragment;
 
 
 public class HomeScreenActivity extends AppCompatActivity {
@@ -25,18 +27,29 @@ public class HomeScreenActivity extends AppCompatActivity {
     static final int FILE_PERMISSION_RREQUEST_CODE = 1;
     static final int NEW_SHOW_REQUEST_RESULT_CODE = 1;
 
+    SectionsPagerAdapter mSectionsPagerAdapter;
+    ViewPager mViewPager;
+    TabLayout mTabs;
+
+    MyShowsFragment mMyShowsFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        AndroidThreeTen.init(this);
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
-        ViewPager viewPager = findViewById(R.id.view_pager);
-        viewPager.setAdapter(sectionsPagerAdapter);
-        TabLayout tabs = findViewById(R.id.tabs);
-        tabs.setupWithViewPager(viewPager);
-        FloatingActionButton fab = findViewById(R.id.fab);
 
+        //Sets all date time stuff to correct sync
+        AndroidThreeTen.init(this);
+        mMyShowsFragment = new MyShowsFragment();
+        //Initialize fragments
+        mSectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
+        mViewPager = findViewById(R.id.view_pager);
+        setupViewPager(mViewPager);
+        mTabs = findViewById(R.id.tabs);
+        mTabs.setupWithViewPager(mViewPager);
+
+
+        //Initialize floating menu button
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -45,11 +58,25 @@ public class HomeScreenActivity extends AppCompatActivity {
         });
     }
 
+    //Responsible for setting up the fragments for each tab
+    private void setupViewPager(ViewPager viewPager){
+        SectionsPagerAdapter adapter = new SectionsPagerAdapter(this,getSupportFragmentManager());
+        adapter.addFragment(mMyShowsFragment,"My Shows");
+        adapter.addFragment(new CountdownFragment(),"Countdowns");
+        viewPager.setAdapter(adapter);
+    }
+
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == NEW_SHOW_REQUEST_CODE && resultCode == NEW_SHOW_REQUEST_RESULT_CODE) {
-            //Add to main view
+            ShowInfo showInfo = new ShowInfo(); //Creates a new object
+            showInfo.id = data.getLongExtra("showID",0);
+            showInfo.imagePath = data.getStringExtra("showImage");
+            showInfo.name = data.getStringExtra("showName");
+            mMyShowsFragment.addShow(showInfo); //Adds it to the fragment, fragment will then automatically update it
         }
     }
 
