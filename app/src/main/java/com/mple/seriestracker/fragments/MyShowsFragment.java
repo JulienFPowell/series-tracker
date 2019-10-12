@@ -35,6 +35,15 @@ public class MyShowsFragment extends Fragment {
         updateAdapter();
     }
 
+    public void removeShow(String showName){
+        mShowsList.removeIf(info -> info.name.equals(showName));
+    }
+
+
+    public void removeShow(long showID){
+        mShowsList.removeIf(info -> info.id == showID);
+    }
+
     private void updateAdapter(){
         mGridView.setAdapter(new GridViewAdapter(getContext(),mShowsList));
     }

@@ -8,8 +8,6 @@ import java.util.Locale;
 
 public class Countdown {
 
-    //All air dates are formatted in this format
-    static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
 
     private int season;
     private int episode;

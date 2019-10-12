@@ -7,9 +7,9 @@
 
     <ImageView
         android:id="@+id/showTileImageView"
-        android:layout_width="210px"
+        android:layout_width="match_parent"
         android:layout_height="260px"
-        android:layout_centerInParent="false"
+        android:layout_centerInParent="true"
         android:padding="1dp" />
 
 </LinearLayout>

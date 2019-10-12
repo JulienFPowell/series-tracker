@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:cardBackgroundColor="#284463">
+
+    <RelativeLayout
+        android:layout_width="330dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textViewShowTitleCountdown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/textViewEpisodeInfoCountdown"
+            android:textStyle="bold"
+            android:text="Title"
+            android:textColor="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/textViewEpisodeInfoCountdown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textViewShowTitleCountdown"
+            android:text="Episode info"
+            android:textColor="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/textViewAirTimeCountdown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textViewEpisodeInfoCountdown"
+            android:text="Countdown Timer"
+            android:textColor="#FFFFFF" />
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>
