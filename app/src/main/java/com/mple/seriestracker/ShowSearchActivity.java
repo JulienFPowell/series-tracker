@@ -1,12 +1,14 @@
 package com.mple.seriestracker;
 
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -16,10 +18,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.mple.seriestracker.api.Trakt;
+import com.mple.seriestracker.api.episodate.Episodate;
+import com.mple.seriestracker.api.episodate.entities.SearchResult;
+import com.mple.seriestracker.api.episodate.entities.ShowSearchResult;
 import com.squareup.picasso.Picasso;
-import com.uwetrottmann.trakt5.entities.SearchResult;
-import com.uwetrottmann.trakt5.enums.Type;
+
+import org.threeten.bp.OffsetDateTime;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,20 +38,20 @@ public class ShowSearchActivity extends AppCompatActivity {
     SearchView searchView;
     RecyclerView recyclerView;
 
-    Trakt trakt;
+    Episodate episodate;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         destroyed = false;
         setContentView(R.layout.show_search);
-        trakt = Trakt.INSTANCE;
+        episodate = Episodate.INSTANCE;
         searchView = findViewById(R.id.searchView);
         recyclerView = findViewById(R.id.recyclerView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
             public boolean onQueryTextSubmit(String s) {
-                new RetrieveSearchTask(searchView.getQuery().toString()).execute();
+                new RetrieveSearchTask().execute(searchView.getQuery().toString());
                 return false;
             }
 
@@ -59,6 +63,7 @@ public class ShowSearchActivity extends AppCompatActivity {
     }
 
     public class ShowInfo{
+        public long showID;
         public String showName;
         public String showImage;
         public String showYear;
@@ -80,6 +85,7 @@ public class ShowSearchActivity extends AppCompatActivity {
         public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View layoutView = LayoutInflater.from(context).inflate(R.layout.show_search_tile, parent,false);
             RecyclerViewHolder rcv = new RecyclerViewHolder(layoutView);
+
             return rcv;
         }
 
@@ -90,6 +96,18 @@ public class ShowSearchActivity extends AppCompatActivity {
             holder.textShowName.setText(showInfo.showName);
             holder.textShowStatus.setText(showInfo.showGenres);
             holder.textShowYear.setText(showInfo.showYear);
+
+            holder.buttonAddShow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent();
+                    intent.putExtra("showID",showInfo.showID);
+                    intent.putExtra("showName",showInfo.showName);
+                    intent.putExtra("showImage",showInfo.showImage);
+                    setResult(HomeScreenActivity.NEW_SHOW_REQUEST_RESULT_CODE,intent);
+                    finish();
+                }
+            });
         }
 
         @Override
@@ -99,11 +117,12 @@ public class ShowSearchActivity extends AppCompatActivity {
     }
 
     //Responsible for holding all objects within the show_search.xml
-    class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    class RecyclerViewHolder extends RecyclerView.ViewHolder {
         ImageView imageViewShow;
         TextView textShowName;
         TextView textShowStatus;
         TextView textShowYear;
+        Button buttonAddShow;
 
         public RecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -111,50 +130,17 @@ public class ShowSearchActivity extends AppCompatActivity {
             textShowName = itemView.findViewById(R.id.textViewSearchResult);
             textShowStatus = itemView.findViewById(R.id.textShowStatusSearchResult);
             textShowYear = itemView.findViewById(R.id.textYearGroupSearchResult);
-        }
-
-        @Override
-        public void onClick(View view) { //Might use this or just keep the button
+            buttonAddShow = itemView.findViewById(R.id.textAddSearchResult);
 
         }
     }
 
-    //Might be useful for other things, Picasso made it redundant atm tho
-    class ImageLoaderTask extends AsyncTask<String,Void, Bitmap>{
-        RecyclerViewHolder vh;
-
-        ImageLoaderTask(RecyclerViewHolder vh){
-            this.vh = vh;
-        }
-
-        @Override
-        protected Bitmap doInBackground(String... strings) {
-            try {
-                return Picasso.get().load(strings[0]).get();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            if(bitmap != null){
-                vh.imageViewShow.setImageBitmap(bitmap);
-            }
-        }
-    }
-    //Handles with the search in the background.
-    class RetrieveSearchTask extends AsyncTask<String,Void,List<SearchResult>>{
-        String query;
+    class RetrieveSearchTask extends AsyncTask<String,Void, SearchResult> {
         RecyclerView recyclerView;
-        public RetrieveSearchTask(String query){
-            this.query = query;
-        }
         @Override
-        protected List<SearchResult> doInBackground(String... strings) {
+        protected SearchResult doInBackground(String... strings) {
             try {
-                Response<List<SearchResult>> searchResults = trakt.getSearch().textQuery(Type.SHOW,query,null,null,null,null,null,null,null,null,1)
+                Response<SearchResult> searchResults = episodate.search().textQuery(strings[0],1)
                         .execute();
                 if(searchResults.isSuccessful()){//Requires oAuth if not, however this search doesn't require oAuth
                     return searchResults.body();
@@ -165,34 +151,23 @@ public class ShowSearchActivity extends AppCompatActivity {
             return null;
         }
 
-        //Temporary, will probably change API services.
         @Override
-        protected void onPostExecute(List<SearchResult> searchResults) {
-           recyclerView = findViewById(R.id.recyclerView);
-           List<ShowInfo> list = new ArrayList<>();
-            for (SearchResult searchResult : searchResults) {
+        protected void onPostExecute(SearchResult searchResults) {
+            recyclerView = findViewById(R.id.recyclerView);
+            List<ShowInfo> list = new ArrayList<>();
+            for (ShowSearchResult searchResult : searchResults.tv_shows) {
                 ShowInfo showInfo = new ShowInfo();
-                showInfo.showImage = "http://static.tvmaze.com/uploads/images/medium_portrait/211/528026.jpg"; //Temporary photo
-//                showInfo.showImage = searchResult.show.ids.imdb; //Get the image from OMDB api and parse it
-                showInfo.showName = searchResult.show.title;
-                showInfo.showYear = searchResult.show.year.toString();
-                String genres = "";
-                if(searchResult.show.genres != null){
-                    for(int i=0;i<searchResult.show.genres.size();i++){
-                        String formatChars = ", ";
-                        if(i == searchResult.show.genres.size()){
-                            formatChars = "";
-                        }
-                        genres+=searchResult.show.genres.get(i) + formatChars;
-                    }
-                }
-                showInfo.showGenres = genres;
+                if(searchResult.start_date.equals("null")) continue;
+                showInfo.showImage = searchResult.image_thumbnail_path;//Get the image from OMDB api and parse it
+                showInfo.showName = searchResult.name;
+                showInfo.showYear = searchResult.start_date + "";
+                showInfo.showGenres = searchResult.status;
+                showInfo.showID = searchResult.id;
                 list.add(showInfo);
             }
             RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(getApplicationContext(),list);
             recyclerView.setAdapter(recyclerViewAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-
         }
     }
 

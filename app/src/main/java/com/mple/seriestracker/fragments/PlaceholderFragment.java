@@ -1,4 +1,4 @@
-package com.mple.seriestracker.main;
+package com.mple.seriestracker.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

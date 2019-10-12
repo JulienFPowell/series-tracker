@@ -16,7 +16,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.jakewharton.threetenabp.AndroidThreeTen;
-import com.mple.seriestracker.main.SectionsPagerAdapter;
+import com.mple.seriestracker.fragments.SectionsPagerAdapter;
 
 
 public class HomeScreenActivity extends AppCompatActivity {
@@ -48,11 +48,8 @@ public class HomeScreenActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == NEW_SHOW_REQUEST_CODE) {
-            if (resultCode == NEW_SHOW_REQUEST_RESULT_CODE) {
-                //Add to the main view.
-            }
+        if (requestCode == NEW_SHOW_REQUEST_CODE && resultCode == NEW_SHOW_REQUEST_RESULT_CODE) {
+            //Add to main view
         }
     }
 
@@ -74,7 +71,7 @@ public class HomeScreenActivity extends AppCompatActivity {
     void startSearchIntent(){
         if(!ShowSearchActivity.destroyed) return;
         Intent intent = new Intent(getApplicationContext(),ShowSearchActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent,NEW_SHOW_REQUEST_CODE);
     }
 
     //Will be used for writing saved data, later on to keep track of what shows are saved

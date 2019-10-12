@@ -1,4 +1,4 @@
-package com.mple.seriestracker.main;
+package com.mple.seriestracker.fragments;
 
 import android.content.Context;
 
@@ -41,7 +41,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        // Show 2 total pages.
+        // ShowSearchResult 2 total pages.
         return 3;
     }
 }

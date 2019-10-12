@@ -1,4 +1,4 @@
-package com.mple.seriestracker.main;
+package com.mple.seriestracker.fragments;
 
 import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
