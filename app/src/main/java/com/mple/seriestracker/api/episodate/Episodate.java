@@ -7,6 +7,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import com.mple.seriestracker.api.episodate.services.Search;
+import com.mple.seriestracker.api.episodate.services.TvShow;
 import com.uwetrottmann.trakt5.TraktV2Helper;
 import com.uwetrottmann.trakt5.enums.ListPrivacy;
 import com.uwetrottmann.trakt5.enums.Rating;
@@ -65,5 +66,6 @@ public class Episodate {
         return retrofit().create(Search.class);
     }
 
+    public TvShow show() {return retrofit().create(TvShow.class);}
 
 }

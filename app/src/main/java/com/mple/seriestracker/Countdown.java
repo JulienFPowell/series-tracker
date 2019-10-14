@@ -1,29 +1,39 @@
 package com.mple.seriestracker;
 
+import com.mple.seriestracker.util.CountdownUtil;
+
 import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDateTime;
-import org.threeten.bp.format.DateTimeFormatter;
-
-import java.util.Locale;
 
 public class Countdown {
 
 
     private int season;
     private int episode;
-    private int name;
+    private String name;
     private LocalDateTime airDate;
 
-    public Countdown(LocalDateTime airDate){
+    public Countdown(String name, int episode,int season,LocalDateTime airDate){
         this.airDate = airDate;
+        this.name = name;
+        this.episode = episode;
+        this.season = season;
     }
 
-    public String getCountdown(){
+
+    public Countdown(com.mple.seriestracker.api.episodate.entities.show.Countdown countdown){
+        this.airDate = CountdownUtil.parseToLocal(countdown.air_date);
+        this.name = countdown.name;
+        this.episode = countdown.episode;
+        this.season = countdown.season;
+    }
+
+    public String getCountdownFormat(){
         Duration duration = Duration.between(LocalDateTime.now(),airDate);
         long days = duration.toDays();
-        long hours = duration.toHours();
-        long minutes= duration.toMinutes();
-        long seconds = duration.getSeconds();
+        long hours = duration.toHours(); //No idea why this returns an absurd number, possibly something wrong with the time conversion (can fix later)
+        int minutes = (int) ((duration.getSeconds() % (60 * 60)) / 60);
+        int seconds = (int) (duration.getSeconds() % 60);
         String timeString = "";
         if(days > 0){
             timeString+=formatDay(days);
@@ -41,6 +51,18 @@ public class Countdown {
         }
 
         return timeString;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getEpisode() {
+        return episode;
+    }
+
+    public int getSeason() {
+        return season;
     }
 
     private String formatDay(long days){
@@ -62,7 +84,9 @@ public class Countdown {
     private String format(long x,String nonPlural){
         //Checks whether or not a plural should be added
         String string = nonPlural;
-        string = x==1? string+"s":string;
-        return String.format("%l %s ",x,string);
+        if(x > 1)
+            string+="s";
+
+        return String.format("%s %s ",x,string);
     }
 }

@@ -20,8 +20,10 @@ public class TvShowResult {
     public String rating;
     public String rating_count;
 
-    public List<Episode> episodes;
     public Countdown countdown;
+    public List<String> genres;
+    public List<String> pictures;
+    public List<Episode> episodes;
 
 
 }

@@ -1,10 +1,9 @@
-package com.mple.seriestracker;
+package com.mple.seriestracker.activity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +17,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.mple.seriestracker.R;
+import com.mple.seriestracker.ShowTracker;
 import com.mple.seriestracker.api.episodate.Episodate;
 import com.mple.seriestracker.api.episodate.entities.SearchResult;
 import com.mple.seriestracker.api.episodate.entities.ShowSearchResult;
@@ -49,10 +50,13 @@ public class ShowSearchActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextSubmit(String s) {
+                //Requests the background task to search for desired query, when pressed enter
                 new RetrieveSearchTask().execute(searchView.getQuery().toString());
                 return false;
             }
 
+            //Because this is a free api, we should not call a result on each character
+            //As the api is already fairly slow (due to insane volume of requests)
             @Override
             public boolean onQueryTextChange(String s) {
                 return false;
@@ -94,6 +98,10 @@ public class ShowSearchActivity extends AppCompatActivity {
             holder.textShowName.setText(showInfo.showName);
             holder.textShowStatus.setText(showInfo.showGenres);
             holder.textShowYear.setText(showInfo.showYear);
+            if(ShowTracker.INSTANCE.addedShowsCache.contains(showInfo.showID)){ //Show is already added
+                holder.buttonAddShow.setVisibility(View.INVISIBLE);  //Hide the add button
+            }
+
             holder.buttonAddShow.setOnClickListener(new View.OnClickListener() {
 
                 @Override
@@ -102,6 +110,9 @@ public class ShowSearchActivity extends AppCompatActivity {
                     intent.putExtra("showID",showInfo.showID);
                     intent.putExtra("showName",showInfo.showName);
                     intent.putExtra("showImage",showInfo.showImage);
+
+                    //Tell the HomeScreenActivity we have a new item to add
+                    //This calls onResult in the main Activity
                     setResult(HomeScreenActivity.NEW_SHOW_REQUEST_RESULT_CODE,intent);
                     finish();
                 }
@@ -140,7 +151,7 @@ public class ShowSearchActivity extends AppCompatActivity {
             try {
                 Response<SearchResult> searchResults = episodate.search().textQuery(strings[0],1)
                         .execute();
-                if(searchResults.isSuccessful()){//Requires oAuth if not, however this search doesn't require oAuth
+                if(searchResults.isSuccessful()){
                     return searchResults.body();
                 }
             } catch (IOException e) {
@@ -156,7 +167,7 @@ public class ShowSearchActivity extends AppCompatActivity {
             for (ShowSearchResult searchResult : searchResults.tv_shows) {
                 ShowInfo showInfo = new ShowInfo();
                 if(searchResult.start_date.equals("null")) continue;
-                showInfo.showImage = searchResult.image_thumbnail_path;//Get the image from OMDB api and parse it
+                showInfo.showImage = searchResult.image_thumbnail_path;
                 showInfo.showName = searchResult.name;
                 showInfo.showYear = searchResult.start_date + "";
                 showInfo.showGenres = searchResult.status;
