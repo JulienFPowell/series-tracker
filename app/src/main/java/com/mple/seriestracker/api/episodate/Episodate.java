@@ -2,21 +2,8 @@ package com.mple.seriestracker.api.episodate;
 
 import androidx.annotation.Nullable;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializer;
 import com.mple.seriestracker.api.episodate.services.Search;
 import com.mple.seriestracker.api.episodate.services.TvShow;
-import com.uwetrottmann.trakt5.TraktV2Helper;
-import com.uwetrottmann.trakt5.enums.ListPrivacy;
-import com.uwetrottmann.trakt5.enums.Rating;
-import com.uwetrottmann.trakt5.enums.SortBy;
-import com.uwetrottmann.trakt5.enums.SortHow;
-import com.uwetrottmann.trakt5.enums.Status;
-
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.OffsetDateTime;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;

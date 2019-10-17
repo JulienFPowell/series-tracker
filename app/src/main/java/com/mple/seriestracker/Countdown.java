@@ -4,6 +4,8 @@ import com.mple.seriestracker.util.CountdownUtil;
 
 import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.OffsetDateTime;
+import org.threeten.bp.ZonedDateTime;
 
 public class Countdown {
 
@@ -11,9 +13,9 @@ public class Countdown {
     private int season;
     private int episode;
     private String name;
-    private LocalDateTime airDate;
+    private ZonedDateTime airDate;
 
-    public Countdown(String name, int episode,int season,LocalDateTime airDate){
+    public Countdown(String name, int episode,int season,ZonedDateTime airDate){
         this.airDate = airDate;
         this.name = name;
         this.episode = episode;
@@ -31,7 +33,10 @@ public class Countdown {
     public String getCountdownFormat(){
         Duration duration = Duration.between(LocalDateTime.now(),airDate);
         long days = duration.toDays();
-        long hours = duration.toHours(); //No idea why this returns an absurd number, possibly something wrong with the time conversion (can fix later)
+        //No idea why this returns an absurd number, possibly something wrong with the time conversion
+        //So the simple fix is to convert the days into hours, subtract the total hours with the days.
+        //This returns the real value, and makes it accurate.
+        long hours = duration.toHours()-(days*24);
         int minutes = (int) ((duration.getSeconds() % (60 * 60)) / 60);
         int seconds = (int) (duration.getSeconds() % 60);
         String timeString = "";

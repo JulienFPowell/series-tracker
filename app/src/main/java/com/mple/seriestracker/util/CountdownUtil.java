@@ -5,6 +5,9 @@ import com.mple.seriestracker.api.episodate.entities.show.Episode;
 
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.OffsetDateTime;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.ZoneOffset;
+import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
 
 import java.util.Locale;
@@ -14,9 +17,11 @@ public class CountdownUtil {
     //All air dates are formatted in this format
     static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
 
-    public static LocalDateTime parseToLocal(String s){
+    public static ZonedDateTime parseToLocal(String s){
         if(s == null) return null;
-        return LocalDateTime.parse(s,DATE_TIME_FORMATTER);
+        return LocalDateTime.parse(s, DATE_TIME_FORMATTER)
+                .atOffset(ZoneOffset.UTC)
+                .atZoneSameInstant(ZoneId.systemDefault());
     }
 
     public static boolean isOlderEpisode(LocalDateTime airDate, LocalDateTime currEpDate){

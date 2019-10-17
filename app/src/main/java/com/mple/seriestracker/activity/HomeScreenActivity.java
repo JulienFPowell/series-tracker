@@ -46,12 +46,13 @@ public class HomeScreenActivity extends AppCompatActivity {
     TabLayout mTabs;
     boolean started = false;
 
+
     //TODO background worker to refresh the UI of each countdown
     //TODO sort the countdown tab based on time
     //TODO notify the user when a show is airing
     //TODO re-obtain the next countdown (if any new episodes) otherwise remove the countdown from the tab
-    //TODO add option to delete shows from my shows tab
-
+    //Selecting is implemented (Just hold down), but deleting isn't.
+    //TODO add delete button to delete shows (holding on image already has checkboxes implemented)
     //All done after that
 
     @Override
