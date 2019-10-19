@@ -1,8 +1,13 @@
 package com.mple.seriestracker.activity;
 
 import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,6 +16,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
@@ -47,11 +53,9 @@ public class HomeScreenActivity extends AppCompatActivity {
     boolean started = false;
 
 
-    //TODO background worker to refresh the UI of each countdown
     //TODO sort the countdown tab based on time
     //TODO notify the user when a show is airing
     //TODO re-obtain the next countdown (if any new episodes) otherwise remove the countdown from the tab
-    //Selecting is implemented (Just hold down), but deleting isn't.
     //TODO add delete button to delete shows (holding on image already has checkboxes implemented)
     //All done after that
 
@@ -84,6 +88,45 @@ public class HomeScreenActivity extends AppCompatActivity {
 
 
     }
+
+
+
+
+    // Creates and displays a notification
+    private void addNotification() {
+        // Builds your notification
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher_round)
+                .setContentTitle("John's Android Studio Tutorials")
+                .setContentText("A video has just arrived!");
+
+        // Creates the intent needed to show the notification
+        Intent notificationIntent = new Intent(this, HomeScreenActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(contentIntent);
+
+        // Add as notification
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(0, builder.build());
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
     protected void onStart() {

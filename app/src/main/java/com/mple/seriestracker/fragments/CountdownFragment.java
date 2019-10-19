@@ -3,6 +3,8 @@ package com.mple.seriestracker.fragments;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,10 +86,17 @@ public class CountdownFragment extends Fragment {
             TvShow tvShow = mTvShowList.get(position);
             Countdown countdown = tvShow.getCountdown();
             holder.textViewTitle.setText(tvShow.getName());
-            //TODO Should have a timer to refresh each countdown
-            holder.textViewEpisodeInfo.setText(String.format("%s - S%sE%s",countdown.getName(),countdown.getSeason(),countdown.getEpisode()));
-            holder.textViewAirTime.setText(countdown.getCountdownFormat());
+            Handler handler=new Handler();
+            handler.post(new Runnable(){
+                @Override
+                public void run() {
+                    holder.textViewEpisodeInfo.setText(String.format("%s - S%sE%s",countdown.getName(),countdown.getSeason(),countdown.getEpisode()));
+                    holder.textViewAirTime.setText(countdown.getCountdownFormat());
+                    handler.postDelayed(this,1000);
+                }
+            });
         }
+
 
         @Override
         public int getItemCount() {
