@@ -1,6 +1,8 @@
 package com.mple.seriestracker;
 
+import com.mple.seriestracker.activity.HomeScreenActivity;
 import com.mple.seriestracker.util.CountdownUtil;
+import com.mple.seriestracker.util.NotificationGenerator;
 
 import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDateTime;
@@ -54,7 +56,6 @@ public class Countdown {
         if(seconds > 0){
             timeString += formatSeconds(seconds);
         }
-
         return timeString;
     }
 

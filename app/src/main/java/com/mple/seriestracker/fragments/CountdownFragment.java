@@ -21,6 +21,8 @@ import com.mple.seriestracker.Countdown;
 import com.mple.seriestracker.R;
 import com.mple.seriestracker.ShowTracker;
 import com.mple.seriestracker.TvShow;
+import com.mple.seriestracker.activity.HomeScreenActivity;
+import com.mple.seriestracker.util.NotificationGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,7 +94,7 @@ public class CountdownFragment extends Fragment {
                 public void run() {
                     holder.textViewEpisodeInfo.setText(String.format("%s - S%sE%s",countdown.getName(),countdown.getSeason(),countdown.getEpisode()));
                     holder.textViewAirTime.setText(countdown.getCountdownFormat());
-                    handler.postDelayed(this,1000);
+                    handler.postDelayed(this,50);
                 }
             });
         }
@@ -119,5 +121,4 @@ public class CountdownFragment extends Fragment {
             cardView.setMinimumWidth(Resources.getSystem().getDisplayMetrics().widthPixels - 50);
         }
     }
-
 }

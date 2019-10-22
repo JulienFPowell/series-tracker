@@ -33,6 +33,7 @@ import com.mple.seriestracker.database.EpisodeTrackDatabase;
 import com.mple.seriestracker.fragments.CountdownFragment;
 import com.mple.seriestracker.fragments.SectionsPagerAdapter;
 import com.mple.seriestracker.fragments.MyShowsFragment;
+import com.mple.seriestracker.util.NotificationGenerator;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public class HomeScreenActivity extends AppCompatActivity {
     TabLayout mTabs;
     boolean started = false;
 
-
+    //TODO allow more than 3 shows to display on countdown page
     //TODO sort the countdown tab based on time
     //TODO notify the user when a show is airing
     //TODO re-obtain the next countdown (if any new episodes) otherwise remove the countdown from the tab
@@ -76,7 +77,6 @@ public class HomeScreenActivity extends AppCompatActivity {
         mTabs = findViewById(R.id.tabs);
         mTabs.setupWithViewPager(mViewPager);
 
-
         //Initialize floating menu button
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -85,48 +85,7 @@ public class HomeScreenActivity extends AppCompatActivity {
                 startSearchIntent();
             }
         });
-
-
     }
-
-
-
-
-    // Creates and displays a notification
-    private void addNotification() {
-        // Builds your notification
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher_round)
-                .setContentTitle("John's Android Studio Tutorials")
-                .setContentText("A video has just arrived!");
-
-        // Creates the intent needed to show the notification
-        Intent notificationIntent = new Intent(this, HomeScreenActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.setContentIntent(contentIntent);
-
-        // Add as notification
-        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(0, builder.build());
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     @Override
     protected void onStart() {
