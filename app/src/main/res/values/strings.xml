@@ -1,6 +1,3 @@
 <resources>
     <string name="app_name">Series Tracker</string>
-    <string name="my_shows_tab_text">My shows</string>
-    <string name="countdowns_tab_text">Countdowns</string>
-    <string name="air_dates_tab_text">Air Dates</string>
 </resources>

@@ -8,14 +8,30 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
+import com.mple.seriestracker.Countdown;
 import com.mple.seriestracker.R;
+import com.mple.seriestracker.activity.HomeScreenActivity;
 
 public class NotificationGenerator extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+    }
+
+    public void CheckIfAiring(long seconds) {
+       if (seconds < 13000){
+            sendNotification();
+        }
+    }
 
     public void sendNotification(View view)
     {
@@ -29,12 +45,12 @@ public class NotificationGenerator extends AppCompatActivity {
         notificationBuilder.setContentIntent(pendingIntent);
 
         NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel =
-                    new NotificationChannel("M_CH_ID", "M_CH_ID", NotificationManager.IMPORTANCE_DEFAULT);
-            notificationChannel.setDescription("Test");
-            nm.createNotificationChannel(notificationChannel);
-        }
+
+        NotificationChannel notificationChannel =
+            new NotificationChannel("M_CH_ID", "M_CH_ID", NotificationManager.IMPORTANCE_DEFAULT);
+        notificationChannel.setDescription("Test");
+        nm.createNotificationChannel(notificationChannel);
+
 
         notificationBuilder.setAutoCancel(true)
                 .setDefaults(Notification.DEFAULT_ALL)
