@@ -22,6 +22,7 @@ import com.mple.seriestracker.R;
 import com.mple.seriestracker.ShowTracker;
 import com.mple.seriestracker.TvShow;
 import com.mple.seriestracker.activity.HomeScreenActivity;
+import com.mple.seriestracker.util.CountdownUtil;
 import com.mple.seriestracker.util.NotificationGenerator;
 
 import java.util.ArrayList;
@@ -37,6 +38,8 @@ public class CountdownFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.countdown_fragment,container,false);
+        setRetainInstance(true);
+
         mRecyclerView = view.findViewById(R.id.recyclerViewCountdown);
         mRecyclerViewAdapter = new RecyclerViewAdapter(getContext(), mTvShowList);
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
@@ -85,14 +88,31 @@ public class CountdownFragment extends Fragment {
         public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
             //populate the textviews with the messages
             TvShow tvShow = mTvShowList.get(position);
-            Countdown countdown = tvShow.getCountdown();
             holder.textViewTitle.setText(tvShow.getName());
             Handler handler=new Handler();
             handler.post(new Runnable(){
                 @Override
                 public void run() {
+                    Countdown countdown = tvShow.getCountdown(); //need to get the new countdown each loop
                     holder.textViewEpisodeInfo.setText(String.format("%s - S%sE%s",countdown.getName(),countdown.getSeason(),countdown.getEpisode()));
-                    holder.textViewAirTime.setText(countdown.getCountdownFormat());
+                    String text = countdown.getCountdownFormat();
+
+                    if(text.equals("")){
+                       Countdown newCountdown =  CountdownUtil.getUpcomingAiringEp(tvShow.getEpisodes(),countdown.getEpisode(),countdown.getSeason());
+                       if(newCountdown != null){
+                           //TODO Read bottom comment
+                           //I guess you could send notifications from here, not sure if it's thread safe though
+                           tvShow.setCountdown(newCountdown);
+                       }else{
+                           //remove from the view
+                           mTvShowList.remove(position);
+                           //Notify adapter something changed
+                           notifyDataSetChanged();
+                           return; //End handler
+                       }
+                    }else{
+                        holder.textViewAirTime.setText(countdown.getCountdownFormat());
+                    }
                     handler.postDelayed(this,50);
                 }
             });

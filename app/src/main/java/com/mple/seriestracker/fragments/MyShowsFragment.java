@@ -33,6 +33,7 @@ public class MyShowsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.myshows_fragment,container,false);
+        setRetainInstance(true);
         mGridView = view.findViewById(R.id.mainGridView);
         mGridView.setNumColumns(3);
         selected = new boolean[mShowsList.size()];

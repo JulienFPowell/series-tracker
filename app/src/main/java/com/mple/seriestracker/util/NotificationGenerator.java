@@ -29,7 +29,7 @@ public class NotificationGenerator extends AppCompatActivity {
 
     public void CheckIfAiring(long seconds) {
        if (seconds < 13000){
-            sendNotification();
+            //sendNotification();
         }
     }
 

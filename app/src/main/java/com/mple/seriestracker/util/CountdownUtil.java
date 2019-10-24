@@ -32,25 +32,28 @@ public class CountdownUtil {
         return currEpDate.toLocalDate().isBefore(airDate.toLocalDate());
     }
 
+    private static int indexOf(Episode[] episodes,int episode, int season){
+        //Loop in reverse, since the episodes are ordered from start to finish
+        //So looping from reverse will start with the newer shows first
+        for (int i = (episodes.length - 1); i >= 0; i--) {
+            Episode episodeResult = episodes[i];
+            if(episodeResult.season == season && episodeResult.episode == episode)
+                return i;
+        }
+
+        return -1;
+    }
+
     //Responsible for finding a certain episode
     public static Countdown getUpcomingAiringEp(Episode[] episodes, int episode, int season) {
         if (episodes == null) {
             return null;
         }
-
-        //Loop in reverse, since the episodes are ordered from start to finish
-        //So looping from reverse will start with the newer shows first
-        for (int i = (episodes.length - 1); i >= 0; i--) {
-            Episode newEpisode = episodes[i];
-
-
-            if (newEpisode.air_date != null && newEpisode.season == season && newEpisode.episode == episode) {
-                return new Countdown(newEpisode.name,newEpisode.episode, newEpisode.season, parseToLocal(newEpisode.air_date));
-            }
-
-            if(newEpisode.season <= (newEpisode.season - 1)) {
-                break;
-            }
+        int index = indexOf(episodes,episode,season);
+        if(index == -1 || index == episodes.length) return null; //no new episode found
+        Episode newEpisode = episodes[index+1];
+        if (newEpisode.air_date != null) { //Make sure that the air date is not null
+            return new Countdown(newEpisode.name,newEpisode.episode, newEpisode.season, parseToLocal(newEpisode.air_date));
         }
 
         return null;
