@@ -128,6 +128,10 @@ public class Countdown extends AppCompatActivity {
         return season;
     }
 
+    public ZonedDateTime getAirDate() {
+        return airDate;
+    }
+
     private String formatDay(long days){
         return format(days,"day");
     }

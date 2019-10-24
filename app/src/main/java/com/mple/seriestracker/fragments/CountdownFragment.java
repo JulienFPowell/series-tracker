@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,6 +27,7 @@ import com.mple.seriestracker.util.CountdownUtil;
 import com.mple.seriestracker.util.NotificationGenerator;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class CountdownFragment extends Fragment {
@@ -55,14 +57,20 @@ public class CountdownFragment extends Fragment {
         ShowTracker.INSTANCE.calenderCache.add(showID);
         //Tell adapter to refresh changes
         mRecyclerViewAdapter.notifyDataSetChanged();
-        sortByTime(); // re-sort by time
+        //sortByTime(); // re-sort by time
     }
 
     //Sort each item by time, one with least time should go to the top
     private void sortByTime(){
-        for(int i=0;i<mRecyclerView.getChildCount();i++){
+        mTvShowList.sort(new Comparator<TvShow>() {
+            @Override
+            public int compare(TvShow tvShow, TvShow t1) {
+                if(tvShow.getCountdown() == null || t1.getCountdown() == null) return 0;
+                return tvShow.getCountdown().getAirDate().isBefore(t1.getCountdown().getAirDate()) ? -1 : 1;
+            }
+        });
 
-        }
+        mRecyclerViewAdapter.notifyDataSetChanged();
     }
 
     class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder>{
@@ -86,13 +94,14 @@ public class CountdownFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
-            //populate the textviews with the messages
-            TvShow tvShow = mTvShowList.get(position);
-            holder.textViewTitle.setText(tvShow.getName());
+
             Handler handler=new Handler();
             handler.post(new Runnable(){
                 @Override
                 public void run() {
+                    //populate the textviews with the messages
+                    TvShow tvShow = tvShowsList.get(position);
+                    holder.textViewTitle.setText(tvShow.getName());
                     Countdown countdown = tvShow.getCountdown(); //need to get the new countdown each loop
                     holder.textViewEpisodeInfo.setText(String.format("%s - S%sE%s",countdown.getName(),countdown.getSeason(),countdown.getEpisode()));
                     String text = countdown.getCountdownFormat();
@@ -103,10 +112,12 @@ public class CountdownFragment extends Fragment {
                            //TODO Read bottom comment
                            //I guess you could send notifications from here, not sure if it's thread safe though
                            tvShow.setCountdown(newCountdown);
+//                           sortByTime();
                        }else{
                            //remove from the view
-                           mTvShowList.remove(position);
-                           //Notify adapter something changed
+                           tvShowsList.remove(position);
+                           //Resort
+//                           sortByTime();
                            notifyDataSetChanged();
                            return; //End handler
                        }
@@ -123,6 +134,7 @@ public class CountdownFragment extends Fragment {
         public int getItemCount() {
             return mTvShowList.size();
         }
+
     }
 
     class RecyclerViewHolder extends RecyclerView.ViewHolder{

@@ -55,9 +55,8 @@ public class HomeScreenActivity extends AppCompatActivity {
     boolean started = false;
 
     //TODO allow more than 3 shows to display on countdown page
-    //TODO sort the countdown tab based on time
+    //TODO sort the countdown tab based on time (sorta works but some weird threading stuff screwing it up)
     //TODO notify the user when a show is airing
-    //TODO re-obtain the next countdown (if any new episodes) otherwise remove the countdown from the tab
     //TODO add delete button to delete shows (holding on image already has checkboxes implemented)
     //All done after that
 
