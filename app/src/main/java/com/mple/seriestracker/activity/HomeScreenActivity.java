@@ -53,10 +53,9 @@ public class HomeScreenActivity extends AppCompatActivity {
     TabLayout mTabs;
     boolean started = false;
 
-    //TODO allow more than 3 shows to display on countdown page
     //TODO sort the countdown tab based on time (sorta works but some weird threading stuff screwing it up)
-    //TODO notify the user when a show is airing
     //TODO add delete button to delete shows (holding on image already has checkboxes implemented)
+    //TODO Crashes upon launch when put on an actual phone
     //All done after that
 
     @Override
@@ -77,12 +76,7 @@ public class HomeScreenActivity extends AppCompatActivity {
 
         //Initialize floating menu button
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startSearchIntent();
-            }
-        });
+        fab.setOnClickListener((View view) -> startSearchIntent());
     }
 
     @Override
@@ -206,7 +200,7 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     //Will be used for writing saved data, later on to keep track of what shows are saved
     boolean hasFilePermissions(){
-        return (Build.VERSION.SDK_INT > 22 && ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED);
+        return (ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED);
     }
 
     void askForPermission(){
