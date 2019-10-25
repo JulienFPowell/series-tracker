@@ -64,12 +64,12 @@ public class ShowSearchActivity extends AppCompatActivity {
         });
     }
 
-    public class ShowInfo{
-        public long showID;
-        public String showName;
-        public String showImage;
-        public String showYear;
-        public String showGenres;
+    private class ShowInfo{
+        private long showID;
+        private String showName;
+        private String showImage;
+        private String showYear;
+        private String showGenres;
     }
 
     //The custom Recycler view adapter
@@ -78,7 +78,7 @@ public class ShowSearchActivity extends AppCompatActivity {
         private List<ShowInfo> itemList;
         private Context context;
 
-        public RecyclerViewAdapter(Context context, List<ShowInfo> itemList) {
+        private RecyclerViewAdapter(Context context, List<ShowInfo> itemList) {
             this.itemList = itemList;
             this.context = context;
         }
@@ -86,9 +86,7 @@ public class ShowSearchActivity extends AppCompatActivity {
         @Override
         public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View layoutView = LayoutInflater.from(context).inflate(R.layout.show_search_tile, parent,false);
-            RecyclerViewHolder rcv = new RecyclerViewHolder(layoutView);
-
-            return rcv;
+            return (new RecyclerViewHolder(layoutView));
         }
 
         @Override
@@ -133,7 +131,7 @@ public class ShowSearchActivity extends AppCompatActivity {
         TextView textShowYear;
         Button buttonAddShow;
 
-        public RecyclerViewHolder(@NonNull View itemView) {
+        private RecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
             imageViewShow = itemView.findViewById(R.id.imageViewSearchResult);
             textShowName = itemView.findViewById(R.id.textViewSearchResult);
@@ -166,7 +164,6 @@ public class ShowSearchActivity extends AppCompatActivity {
             List<ShowInfo> list = new ArrayList<>();
             for (ShowSearchResult searchResult : searchResults.tv_shows) {
                 ShowInfo showInfo = new ShowInfo();
-                if(searchResult.start_date.equals("null")) continue;
                 showInfo.showImage = searchResult.image_thumbnail_path;
                 showInfo.showName = searchResult.name;
                 showInfo.showYear = searchResult.start_date + "";
