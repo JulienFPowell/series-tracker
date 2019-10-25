@@ -35,47 +35,21 @@ public class Countdown extends AppCompatActivity {
         this.episode = countdown.episode;
         this.season = countdown.season;
     }
-
-    public void getSecondsTillAiring(){
-        Duration duration = Duration.between(LocalDateTime.now(),airDate);
-        long days = duration.toDays();
-        //No idea why this returns an absurd number, possibly something wrong with the time conversion
-        //So the simple fix is to convert the days into hours, subtract the total hours with the days.
-        //This returns the real value, and makes it accurate.
-        long hours = duration.toHours()-(days*24);
-        long minutes = (int) ((duration.getSeconds() % (60 * 60)) / 60);
-        long seconds = (int) (duration.getSeconds() % 60);
-        if(days > 0){
-            hours += days * 24;
-        }
-        if(hours > 0){
-            minutes += 60* hours;
-        }
-
-        if(minutes > 0){
-            seconds  += 60 * minutes;
-        }
-        if (seconds < 13000){
-            //sendNotification();
-        }
-    }
-
-    public void sendNotification(View view)
+ public void sendNotification()
     {
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "M_CH_ID");
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, "M_CH_ID");
 
         //Create the intent that’ll fire when the user taps the notification//
 
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.androidauthority.com/"));
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        Intent intent = new Intent(context, HomeScreenActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
         notificationBuilder.setContentIntent(pendingIntent);
-
-        NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         NotificationChannel notificationChannel =
                 new NotificationChannel("M_CH_ID", "M_CH_ID", NotificationManager.IMPORTANCE_DEFAULT);
-        notificationChannel.setDescription("Test");
+        notificationChannel.setDescription("airing");
         nm.createNotificationChannel(notificationChannel);
 
         notificationBuilder.setAutoCancel(true)
@@ -83,16 +57,17 @@ public class Countdown extends AppCompatActivity {
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setTicker("Hearty365")
-                .setContentTitle("Default notification")
-                .setContentText("Random words")
+                .setContentTitle("Series Tracker")
+                .setContentText("One of your shows is now airing!")
                 .setContentInfo("Info");
 
         nm.notify(1, notificationBuilder.build());
     }
 
-    public String getCountdownFormat(){
-        getSecondsTillAiring();
+    public String getCountdownFormat(Context context){
+        this.context = context;
         Duration duration = Duration.between(LocalDateTime.now(),airDate);
+        long secondsRemaining = 0;
         long days = duration.toDays();
         //No idea why this returns an absurd number, possibly something wrong with the time conversion
         //So the simple fix is to convert the days into hours, subtract the total hours with the days.
@@ -103,18 +78,28 @@ public class Countdown extends AppCompatActivity {
         String timeString = "";
         if(days > 0){
             timeString+=formatDay(days);
+            secondsRemaining += days * 24 * 60 *60;
         }
         if(hours > 0){
             timeString+=formatHour(hours);
+            secondsRemaining += hours * 60 *60;
         }
         if(minutes > 0){
             timeString+= formatMinutes(minutes);
+            secondsRemaining += minutes *60;
         }
         if(seconds > 0){
             timeString += formatSeconds(seconds);
+            secondsRemaining +=  seconds;
+        }
+        if (secondsRemaining < 500000){
+            sendNotification();
+            //CountdownUtil.getUpcomingAiringEp(this.episode, this.episode, this.season);
         }
         return timeString;
+
     }
+
 
     public String getName() {
         return name;
