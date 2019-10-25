@@ -3,7 +3,6 @@ package com.mple.seriestracker.fragments;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +11,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,9 +20,7 @@ import com.mple.seriestracker.Countdown;
 import com.mple.seriestracker.R;
 import com.mple.seriestracker.ShowTracker;
 import com.mple.seriestracker.TvShow;
-import com.mple.seriestracker.activity.HomeScreenActivity;
 import com.mple.seriestracker.util.CountdownUtil;
-import com.mple.seriestracker.util.NotificationGenerator;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -104,7 +100,7 @@ public class CountdownFragment extends Fragment {
                     holder.textViewTitle.setText(tvShow.getName());
                     Countdown countdown = tvShow.getCountdown(); //need to get the new countdown each loop
                     holder.textViewEpisodeInfo.setText(String.format("%s - S%sE%s",countdown.getName(),countdown.getSeason(),countdown.getEpisode()));
-                    String text = countdown.getCountdownFormat();
+                    String text = countdown.getCountdownFormat(context);
 
                     if(text.equals("")){
                        Countdown newCountdown =  CountdownUtil.getUpcomingAiringEp(tvShow.getEpisodes(),countdown.getEpisode(),countdown.getSeason());
@@ -122,7 +118,7 @@ public class CountdownFragment extends Fragment {
                            return; //End handler
                        }
                     }else{
-                        holder.textViewAirTime.setText(countdown.getCountdownFormat());
+                        holder.textViewAirTime.setText(countdown.getCountdownFormat(context));
                     }
                     handler.postDelayed(this,50);
                 }

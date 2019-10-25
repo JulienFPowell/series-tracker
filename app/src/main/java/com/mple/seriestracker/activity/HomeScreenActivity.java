@@ -34,7 +34,6 @@ import com.mple.seriestracker.database.EpisodeTrackDatabase;
 import com.mple.seriestracker.fragments.CountdownFragment;
 import com.mple.seriestracker.fragments.SectionsPagerAdapter;
 import com.mple.seriestracker.fragments.MyShowsFragment;
-import com.mple.seriestracker.util.NotificationGenerator;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -10,6 +10,8 @@ import android.net.Uri;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
+
+import com.mple.seriestracker.activity.HomeScreenActivity;
 import com.mple.seriestracker.util.CountdownUtil;
 import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDateTime;
@@ -21,6 +23,7 @@ public class Countdown extends AppCompatActivity {
     private int episode;
     private String name;
     private ZonedDateTime airDate;
+    private Context context;
 
     public Countdown(String name, int episode,int season,ZonedDateTime airDate){
         this.airDate = airDate;
@@ -92,7 +95,7 @@ public class Countdown extends AppCompatActivity {
             timeString += formatSeconds(seconds);
             secondsRemaining +=  seconds;
         }
-        if (secondsRemaining < 500000){
+        if (secondsRemaining == 5){
             sendNotification();
             //CountdownUtil.getUpcomingAiringEp(this.episode, this.episode, this.season);
         }
