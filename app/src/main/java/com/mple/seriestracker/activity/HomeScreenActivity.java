@@ -83,6 +83,7 @@ public class HomeScreenActivity extends AppCompatActivity {
                 startSearchIntent();
             }
         });
+
     }
 
     @Override
@@ -141,9 +142,8 @@ public class HomeScreenActivity extends AppCompatActivity {
         protected String doInBackground(String... strings) {
             ShowInfo[] showData =  EpisodeTrackDatabase.INSTANCE.getAllShows();
             runOnUiThread(() ->{
-                new TvShowTask().execute(showData);
                 for (ShowInfo show : showData) {
-                    runOnUiThread(() ->addShow(show));
+                    addShow(show);
                 }
             });
             return null;
