@@ -28,9 +28,9 @@ import java.util.List;
 
 public class CountdownFragment extends Fragment {
 
-    RecyclerView mRecyclerView;
-    List<TvShow> mTvShowList = new ArrayList<>();
-    RecyclerViewAdapter mRecyclerViewAdapter;
+    private RecyclerView mRecyclerView;
+    private List<TvShow> mTvShowList = new ArrayList<>();
+    private RecyclerViewAdapter mRecyclerViewAdapter;
 
     @Nullable
     @Override
@@ -65,7 +65,6 @@ public class CountdownFragment extends Fragment {
                 return tvShow.getCountdown().getAirDate().isBefore(t1.getCountdown().getAirDate()) ? -1 : 1;
             }
         });
-
         mRecyclerViewAdapter.notifyDataSetChanged();
     }
 
@@ -75,7 +74,7 @@ public class CountdownFragment extends Fragment {
 
         List<TvShow> tvShowsList;
 
-        public RecyclerViewAdapter(Context context, List<TvShow> tvShowsList){
+        private RecyclerViewAdapter(Context context, List<TvShow> tvShowsList){
             this.context = context;
             this.tvShowsList = tvShowsList;
         }
@@ -84,8 +83,7 @@ public class CountdownFragment extends Fragment {
         @Override
         public RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View layoutView = LayoutInflater.from(context).inflate(R.layout.countdown_tile,parent,false);
-            RecyclerViewHolder recyclerViewHolder = new RecyclerViewHolder(layoutView);
-            return recyclerViewHolder;
+            return new RecyclerViewHolder(layoutView);
         }
 
         @Override
@@ -106,7 +104,6 @@ public class CountdownFragment extends Fragment {
                        Countdown newCountdown =  CountdownUtil.getUpcomingAiringEp(tvShow.getEpisodes(),countdown.getEpisode(),countdown.getSeason());
                        if(newCountdown != null){
                            //TODO Read bottom comment
-                           //I guess you could send notifications from here, not sure if it's thread safe though
                            tvShow.setCountdown(newCountdown);
 //                           sortByTime();
                        }else{
@@ -139,7 +136,7 @@ public class CountdownFragment extends Fragment {
         TextView textViewAirTime;
         CardView cardView;
 
-        public RecyclerViewHolder(@NonNull View itemView) {
+        private RecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewTitle = itemView.findViewById(R.id.textViewShowTitleCountdown);
             textViewEpisodeInfo = itemView.findViewById(R.id.textViewEpisodeInfoCountdown);

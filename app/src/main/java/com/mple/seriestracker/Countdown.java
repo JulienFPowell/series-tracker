@@ -6,8 +6,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
@@ -38,7 +36,7 @@ public class Countdown extends AppCompatActivity {
         this.episode = countdown.episode;
         this.season = countdown.season;
     }
- public void sendNotification()
+ public void sendNotification(String name, int season, int episode)
     {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, "M_CH_ID");
 
@@ -61,7 +59,7 @@ public class Countdown extends AppCompatActivity {
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setTicker("Hearty365")
                 .setContentTitle("Series Tracker")
-                .setContentText("One of your shows is now airing!")
+                .setContentText(name + " Season " + season + " episode " + episode + " is now airing!")
                 .setContentInfo("Info");
 
         nm.notify(1, notificationBuilder.build());
@@ -95,9 +93,8 @@ public class Countdown extends AppCompatActivity {
             timeString += formatSeconds(seconds);
             secondsRemaining +=  seconds;
         }
-        if (secondsRemaining == 5){
-            sendNotification();
-            //CountdownUtil.getUpcomingAiringEp(this.episode, this.episode, this.season);
+        if (secondsRemaining == 323200){
+            sendNotification(getName(), this.season, this.episode);
         }
         return timeString;
 

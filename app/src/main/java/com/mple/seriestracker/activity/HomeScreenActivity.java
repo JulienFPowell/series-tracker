@@ -1,24 +1,16 @@
 package com.mple.seriestracker.activity;
 
 import android.Manifest;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -32,8 +24,8 @@ import com.mple.seriestracker.api.episodate.Episodate;
 import com.mple.seriestracker.api.episodate.entities.show.TvShowResult;
 import com.mple.seriestracker.database.EpisodeTrackDatabase;
 import com.mple.seriestracker.fragments.CountdownFragment;
-import com.mple.seriestracker.fragments.SectionsPagerAdapter;
 import com.mple.seriestracker.fragments.MyShowsFragment;
+import com.mple.seriestracker.fragments.SectionsPagerAdapter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,10 +45,9 @@ public class HomeScreenActivity extends AppCompatActivity {
     TabLayout mTabs;
     boolean started = false;
 
-    //TODO allow more than 3 shows to display on countdown page
     //TODO sort the countdown tab based on time (sorta works but some weird threading stuff screwing it up)
-    //TODO notify the user when a show is airing
     //TODO add delete button to delete shows (holding on image already has checkboxes implemented)
+    //TODO Crashes upon launch when put on an actual phone
     //All done after that
 
     @Override
@@ -77,13 +68,7 @@ public class HomeScreenActivity extends AppCompatActivity {
 
         //Initialize floating menu button
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startSearchIntent();
-            }
-        });
-
+        fab.setOnClickListener((View view) -> startSearchIntent());
     }
 
     @Override
@@ -206,7 +191,7 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     //Will be used for writing saved data, later on to keep track of what shows are saved
     boolean hasFilePermissions(){
-        return (Build.VERSION.SDK_INT > 22 && ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED);
+        return (ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED);
     }
 
     void askForPermission(){
