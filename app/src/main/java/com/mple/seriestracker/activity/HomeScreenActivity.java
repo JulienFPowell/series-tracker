@@ -69,7 +69,11 @@ public class HomeScreenActivity extends AppCompatActivity {
         //Initialize floating menu button
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener((View view) -> startSearchIntent());
+
+        //Initialize delete button
+        FloatingActionButton deleteButton = findViewById(R.id.deleteButton);
     }
+
 
     @Override
     protected void onStart() {

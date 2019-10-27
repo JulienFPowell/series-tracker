@@ -59,7 +59,6 @@ public class MyShowsFragment extends Fragment {
         mAdapter.notifyDataSetChanged();
     }
 
-
     public class GridViewAdapter extends BaseAdapter {
 
         private Context context;
@@ -131,6 +130,5 @@ public class MyShowsFragment extends Fragment {
             Picasso.get().load(showInfo.imagePath).into(vh.imageView); //Picasso deals with caching and background threading automatically
             return view; //return the view
         }
-
     }
 }

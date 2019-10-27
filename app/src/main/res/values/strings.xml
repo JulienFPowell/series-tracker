@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Series Tracker</string>
+    <string name="deleteButton">Delete</string>
 </resources>
