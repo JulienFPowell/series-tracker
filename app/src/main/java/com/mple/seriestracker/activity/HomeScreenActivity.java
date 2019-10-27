@@ -48,6 +48,7 @@ public class HomeScreenActivity extends AppCompatActivity {
     //TODO sort the countdown tab based on time (sorta works but some weird threading stuff screwing it up)
     //TODO add delete button to delete shows (holding on image already has checkboxes implemented)
     //TODO Crashes upon launch when put on an actual phone
+    //TODO Decide which permissions we actually need
     //All done after that
 
     @Override
@@ -68,7 +69,13 @@ public class HomeScreenActivity extends AppCompatActivity {
 
         //Initialize floating menu button
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener((View view) -> startSearchIntent());
+        fab.setOnClickListener((View view) ->{
+            if (hasFilePermissions()){
+                askForPermission();
+        }
+            else{
+                startSearchIntent();
+        }});
 
         //Initialize delete button
         FloatingActionButton deleteButton = findViewById(R.id.deleteButton);
