@@ -1,24 +1,16 @@
 package com.mple.seriestracker.activity;
 
 import android.Manifest;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -32,8 +24,8 @@ import com.mple.seriestracker.api.episodate.Episodate;
 import com.mple.seriestracker.api.episodate.entities.show.TvShowResult;
 import com.mple.seriestracker.database.EpisodeTrackDatabase;
 import com.mple.seriestracker.fragments.CountdownFragment;
-import com.mple.seriestracker.fragments.SectionsPagerAdapter;
 import com.mple.seriestracker.fragments.MyShowsFragment;
+import com.mple.seriestracker.fragments.SectionsPagerAdapter;
 
 import java.io.IOException;
 import java.util.ArrayList;
