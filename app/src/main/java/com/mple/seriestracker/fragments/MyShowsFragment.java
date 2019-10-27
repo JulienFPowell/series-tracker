@@ -1,5 +1,6 @@
 package com.mple.seriestracker.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import androidx.fragment.app.Fragment;
 
 import com.mple.seriestracker.R;
 import com.mple.seriestracker.ShowInfo;
+import com.mple.seriestracker.activity.HomeScreenActivity;
 import com.mple.seriestracker.database.EpisodeTrackDatabase;
 import com.squareup.picasso.Picasso;
 
@@ -25,7 +27,7 @@ import java.util.List;
 public class MyShowsFragment extends Fragment {
 
     List<ShowInfo> mShowsList = new ArrayList<>();
-    boolean[] selected;
+    List<Integer> mSelectedItems = new ArrayList<>();
     GridView mGridView;
     GridViewAdapter mAdapter;
 
@@ -36,15 +38,33 @@ public class MyShowsFragment extends Fragment {
         setRetainInstance(true);
         mGridView = view.findViewById(R.id.mainGridView);
         mGridView.setNumColumns(3);
-        selected = new boolean[mShowsList.size()];
         mAdapter = new GridViewAdapter(getContext(),mShowsList);
         mGridView.setAdapter(mAdapter);
         return view;
     }
 
+    
+    public void deleteSelected(){
+        if(mSelectedItems.size() == 0) return; //ensure we have items to delete
+        ShowInfo[] showInfos = new ShowInfo[mSelectedItems.size()];
+        for (int i = 0; i < mSelectedItems.size(); i++) {
+            showInfos[i] = mShowsList.get(mSelectedItems.get(i));
+        }
+
+        for (ShowInfo showInfo : showInfos) {
+            if(mShowsList.removeIf(n -> n.id == showInfo.id)){ // && EpisodeTrackDatabase.INSTANCE.deleteShow(showInfo.id);
+                //Should also call EpisodeTrackDatabase.INSTANCE.deleteShow(showInfo.id);
+                //After everything works smooth
+            }
+        }
+        mSelectedItems.clear();
+        HomeScreenActivity.deleteButton.hide();
+        mAdapter.notifyDataSetChanged();
+    }
+
     public void addShow(ShowInfo showInfo){
         mShowsList.add(showInfo);
-        selected = new boolean[mShowsList.size()]; //update size of
+//        selected = new boolean[mShowsList.size()]; //update size of
         updateAdapter();
     }
 
@@ -112,16 +132,23 @@ public class MyShowsFragment extends Fragment {
                 public boolean onLongClick(View view) {
                     CheckBox checkBox = vh.checkBox;
                     int id = checkBox.getId();
-                    if(selected[id]){
+                    if(mSelectedItems.contains(id)){
                         checkBox.setSelected(false);
-                        selected[id] = false;
+                        mSelectedItems.removeIf(n -> n == id);
                         checkBox.setVisibility(View.INVISIBLE);
                     }else{
                         checkBox.setSelected(true);
-                        selected[id] = true;
+                        mSelectedItems.add(id);
                         checkBox.setVisibility(View.VISIBLE);
                     }
-                    vh.checkBox.setChecked(selected[i]);
+                    vh.checkBox.setChecked(mSelectedItems.contains(i));
+
+                    if(mSelectedItems.size() > 0){
+                        HomeScreenActivity.deleteButton.show();
+                    }else{
+                        HomeScreenActivity.deleteButton.hide();
+                    }
+
                     return false;
                 }
             });

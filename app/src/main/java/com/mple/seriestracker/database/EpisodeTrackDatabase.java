@@ -125,12 +125,13 @@ public class EpisodeTrackDatabase extends DatabaseHelper{
         db.close();
     }
 
-    public void deleteShow(long showID){
+    public boolean deleteShow(long showID){
         String sql = String.format("DELETE FROM %s WHERE showID = %d",TABLE_NAME,showID);
         db = getWritableDatabase();
         Cursor cursor = db.rawQuery(sql,null);
-        cursor.moveToFirst();
+        boolean deleted = cursor.moveToFirst();
         cursor.close();
         db.close();
+        return deleted;
     }
 }

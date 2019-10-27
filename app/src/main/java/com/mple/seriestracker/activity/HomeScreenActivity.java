@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -50,7 +51,7 @@ public class HomeScreenActivity extends AppCompatActivity {
     //TODO Crashes upon launch when put on an actual phone
     //TODO Decide which permissions we actually need
     //All done after that
-
+    public static FloatingActionButton deleteButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +79,13 @@ public class HomeScreenActivity extends AppCompatActivity {
         }});
 
         //Initialize delete button
-        FloatingActionButton deleteButton = findViewById(R.id.deleteButton);
+        deleteButton = findViewById(R.id.deleteButton);
+        deleteButton.hide();
+        //Deletes all selected items from the "my shows" tab
+        //TODO Also delete items from the countdown tab too
+        deleteButton.setOnClickListener((View) -> {
+            ((MyShowsFragment)mSectionsPagerAdapter.getItem(0)).deleteSelected();
+        });
     }
 
 
