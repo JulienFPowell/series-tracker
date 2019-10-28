@@ -55,7 +55,6 @@ public class CountdownFragment extends Fragment {
         //Tell adapter to refresh changes
         mRecyclerViewAdapter.notifyDataSetChanged();
         //sortByTime(); // re-sort by time
-        //removeShow(showID);
     }
 
     //Sort each item by time, one with least time should go to the top
@@ -118,14 +117,13 @@ public class CountdownFragment extends Fragment {
                        Countdown newCountdown =  CountdownUtil.getUpcomingAiringEp(tvShow.getEpisodes(),countdown.getEpisode(),countdown.getSeason());
                        if(newCountdown != null){
                            tvShow.setCountdown(newCountdown);
-//                           sortByTime();
                        }else{
                            //remove from the view
                            tvShowsList.remove(position);
                            //Resort
-//                           sortByTime();
                            notifyDataSetChanged();
-                           return; //End handler
+                           handler.removeCallbacks(this); //End handler
+                           return;
                        }
                     }else{
                         holder.textViewAirTime.setText(countdown.getCountdownFormat(context));
