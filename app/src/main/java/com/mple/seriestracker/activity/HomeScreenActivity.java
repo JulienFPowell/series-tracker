@@ -112,6 +112,7 @@ public class HomeScreenActivity extends AppCompatActivity {
     public void addShow(ShowInfo showInfo){
         new TvShowTask().execute(showInfo); //Background task to get info from the api
         ((MyShowsFragment)mSectionsPagerAdapter.getItem(0)).addShow(showInfo); //Adds it to the fragment, fragment will then automatically update it
+        EpisodeTrackDatabase.INSTANCE.addShow(showInfo.name,showInfo.imagePath,showInfo.id);
     }
 
     public void addCountdown(long showID){
@@ -137,6 +138,15 @@ public class HomeScreenActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... strings) {
+            //Wait for fragment to load, before loading anything to it
+            //Didn't have much time to fix it, so we went with a quick fix
+            while(((MyShowsFragment) mSectionsPagerAdapter.getItem(0)).getAdapter() == null){
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
             ShowInfo[] showData =  EpisodeTrackDatabase.INSTANCE.getAllShows();
             runOnUiThread(() ->{
                 for (ShowInfo show : showData) {

@@ -35,11 +35,14 @@ public class MyShowsFragment extends Fragment {
         return mSelectedItems;
     }
 
+    public GridViewAdapter getAdapter() {
+        return mAdapter;
+    }
+
     public List<Integer> mSelectedItems = new ArrayList<>();
     GridView mGridView;
     GridViewAdapter mAdapter;
 
-    boolean started = false;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -49,31 +52,8 @@ public class MyShowsFragment extends Fragment {
         mGridView.setNumColumns(3);
         mAdapter = new GridViewAdapter(getContext(),mShowsList);
         mGridView.setAdapter(mAdapter);
-        loadSettings();
         return view;
     }
-
-    public void loadSettings(){
-        if(started) return;
-        started = true;
-        //Loads settings from database
-       // new LoadShowsTask().execute();
-    }
-
-    class LoadShowsTask extends AsyncTask<String,Void,String> {
-
-        @Override
-        protected String doInBackground(String... strings) {
-            ShowInfo[] showData =  EpisodeTrackDatabase.INSTANCE.getAllShows();
-            getActivity().runOnUiThread(() ->{
-                for (ShowInfo show : showData) {
-                    addShow(show);
-                }
-            });
-            return null;
-        }
-    }
-
 
     public void deleteSelected(){
         if(mSelectedItems.size() == 0) return; //ensure we have items to delete
