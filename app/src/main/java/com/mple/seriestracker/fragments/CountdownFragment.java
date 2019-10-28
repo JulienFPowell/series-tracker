@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mple.seriestracker.Countdown;
 import com.mple.seriestracker.R;
+import com.mple.seriestracker.ShowInfo;
 import com.mple.seriestracker.ShowTracker;
 import com.mple.seriestracker.TvShow;
 import com.mple.seriestracker.util.CountdownUtil;
@@ -69,8 +70,10 @@ public class CountdownFragment extends Fragment {
     }
 
     //Used for deleting the show from the adapter.
-    public void removeShow(int position){
-        mTvShowList.remove(position);
+    public void removeShow(ShowInfo show){
+        if(mTvShowList.removeIf(n -> n.getId() == show.id)){
+            ShowTracker.INSTANCE.calenderCache.remove(show.id);
+        }
         mRecyclerViewAdapter.notifyDataSetChanged();
     }
 

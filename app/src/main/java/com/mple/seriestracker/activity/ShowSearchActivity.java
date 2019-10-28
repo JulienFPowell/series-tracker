@@ -96,7 +96,7 @@ public class ShowSearchActivity extends AppCompatActivity {
             holder.textShowName.setText(showInfo.showName);
             holder.textShowStatus.setText(showInfo.showGenres);
             holder.textShowYear.setText(showInfo.showYear);
-            if(ShowTracker.INSTANCE.addedShowsCache.contains(showInfo.showID)){ //Show is already added
+            if(ShowTracker.INSTANCE.tvShowCache.containsKey(showInfo.showID)){ //Show is already added
                 holder.buttonAddShow.setVisibility(View.INVISIBLE);  //Hide the add button
             }
 

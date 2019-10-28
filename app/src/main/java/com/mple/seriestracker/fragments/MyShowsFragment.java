@@ -2,6 +2,7 @@ package com.mple.seriestracker.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import com.mple.seriestracker.Countdown;
 import com.mple.seriestracker.R;
 import com.mple.seriestracker.ShowInfo;
+import com.mple.seriestracker.ShowTracker;
 import com.mple.seriestracker.activity.HomeScreenActivity;
 import com.mple.seriestracker.database.EpisodeTrackDatabase;
 import com.squareup.picasso.Picasso;
@@ -29,7 +31,7 @@ public class MyShowsFragment extends Fragment {
 
     List<ShowInfo> mShowsList = new ArrayList<>();
 
-    public List<Integer> getmSelectedItems() {
+    public List<Integer> getSelectedItems() {
         return mSelectedItems;
     }
 
@@ -37,6 +39,7 @@ public class MyShowsFragment extends Fragment {
     GridView mGridView;
     GridViewAdapter mAdapter;
 
+    boolean started = false;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -46,20 +49,39 @@ public class MyShowsFragment extends Fragment {
         mGridView.setNumColumns(3);
         mAdapter = new GridViewAdapter(getContext(),mShowsList);
         mGridView.setAdapter(mAdapter);
+        loadSettings();
         return view;
     }
 
-    
+    public void loadSettings(){
+        if(started) return;
+        started = true;
+        //Loads settings from database
+       // new LoadShowsTask().execute();
+    }
+
+    class LoadShowsTask extends AsyncTask<String,Void,String> {
+
+        @Override
+        protected String doInBackground(String... strings) {
+            ShowInfo[] showData =  EpisodeTrackDatabase.INSTANCE.getAllShows();
+            getActivity().runOnUiThread(() ->{
+                for (ShowInfo show : showData) {
+                    addShow(show);
+                }
+            });
+            return null;
+        }
+    }
+
+
     public void deleteSelected(){
         if(mSelectedItems.size() == 0) return; //ensure we have items to delete
-        ShowInfo[] showInfos = new ShowInfo[mSelectedItems.size()];
-        for (int i = 0; i < mSelectedItems.size(); i++) {
-            showInfos[i] = mShowsList.get(mSelectedItems.get(i));
-        }
-
+        ShowInfo[] showInfos = getSelectedShows();
         for (ShowInfo showInfo : showInfos) {
             if(mShowsList.removeIf(n -> n.id == showInfo.id)){
                 EpisodeTrackDatabase.INSTANCE.deleteShow(showInfo.id);
+                ShowTracker.INSTANCE.tvShowCache.remove(showInfo.id);
 
             }
         }
@@ -67,6 +89,15 @@ public class MyShowsFragment extends Fragment {
         HomeScreenActivity.deleteButton.hide();
         mAdapter.notifyDataSetChanged();
     }
+
+    public ShowInfo[] getSelectedShows(){
+        ShowInfo[] showInfos = new ShowInfo[mSelectedItems.size()];
+        for (int i = 0; i < mSelectedItems.size(); i++) {
+            showInfos[i] = mShowsList.get(mSelectedItems.get(i));
+        }
+        return showInfos;
+    }
+
 
 
     public void addShow(ShowInfo showInfo){

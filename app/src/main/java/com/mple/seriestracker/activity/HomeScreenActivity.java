@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -17,7 +16,6 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.jakewharton.threetenabp.AndroidThreeTen;
-import com.mple.seriestracker.IDeleteShow;
 import com.mple.seriestracker.R;
 import com.mple.seriestracker.ShowInfo;
 import com.mple.seriestracker.ShowTracker;
@@ -36,7 +34,7 @@ import java.util.List;
 import retrofit2.Response;
 
 
-public class HomeScreenActivity extends AppCompatActivity implements IDeleteShow {
+public class HomeScreenActivity extends AppCompatActivity {
 
     static final int NEW_SHOW_REQUEST_CODE = 1;
     static final int FILE_PERMISSION_RREQUEST_CODE = 1;
@@ -80,23 +78,19 @@ public class HomeScreenActivity extends AppCompatActivity implements IDeleteShow
         //Deletes all selected items from the "my shows" tab
         //TODO Also delete items from the countdown tab too
         deleteButton.setOnClickListener((View) -> {
-            List<Integer> selectedItems =  ((MyShowsFragment)mSectionsPagerAdapter.getItem(0)).getmSelectedItems();
+            ShowInfo[] selectedShows =  ((MyShowsFragment)mSectionsPagerAdapter.getItem(0)).getSelectedShows();
 
-            int positionToDelete = selectedItems.get(0);
-            ((CountdownFragment) mSectionsPagerAdapter.getItem(1)).removeShow(positionToDelete);
-
-            //(CountdownFragment.RecyclerViewAdapter.removeShow());
+            for (ShowInfo selectedShow: selectedShows) {
+                ((CountdownFragment) mSectionsPagerAdapter.getItem(1)).removeShow(selectedShow);
+            }
             ((MyShowsFragment)mSectionsPagerAdapter.getItem(0)).deleteSelected();
         });
     }
 
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
-        //On start is called when the search intent is destroyed
-        //This prevents it from being used more than once.
-        //As it's intended for loading settings only (after all UI elements are initialized)
         if(started) return;
         loadSettings();
         started = true;
@@ -109,7 +103,7 @@ public class HomeScreenActivity extends AppCompatActivity implements IDeleteShow
         viewPager.setAdapter(mSectionsPagerAdapter);
     }
 
-    private void loadSettings(){
+    public void loadSettings(){
         //Loads settings from database
         new LoadShowsTask().execute();
     }
@@ -117,7 +111,6 @@ public class HomeScreenActivity extends AppCompatActivity implements IDeleteShow
     //Adds a show to the "my shows" tab
     public void addShow(ShowInfo showInfo){
         new TvShowTask().execute(showInfo); //Background task to get info from the api
-        //EpisodeTrackDatabase.INSTANCE.addShow(showInfo.name,showInfo.imagePath,showInfo.id); //Add the show to the database
         ((MyShowsFragment)mSectionsPagerAdapter.getItem(0)).addShow(showInfo); //Adds it to the fragment, fragment will then automatically update it
     }
 
@@ -136,14 +129,8 @@ public class HomeScreenActivity extends AppCompatActivity implements IDeleteShow
             showInfo.id = data.getLongExtra("showID",0);
             showInfo.imagePath = data.getStringExtra("showImage");
             showInfo.name = data.getStringExtra("showName");
-            ShowTracker.INSTANCE.addedShowsCache.add(showInfo.id);
             addShow(showInfo);
         }
-    }
-
-    @Override
-    public void deleteShow(int showId) {
-
     }
 
     class LoadShowsTask extends AsyncTask<String,Void,String>{
