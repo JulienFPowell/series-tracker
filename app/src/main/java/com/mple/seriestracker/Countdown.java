@@ -93,7 +93,7 @@ public class Countdown extends AppCompatActivity {
             timeString += formatSeconds(seconds);
             secondsRemaining +=  seconds;
         }
-        if (secondsRemaining == 323200){
+        if (secondsRemaining == 0){
             sendNotification(getName(), this.season, this.episode);
         }
         return timeString;
