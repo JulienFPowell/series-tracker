@@ -7,7 +7,7 @@ public class TvShow {
 
     private String name;
     private String imageUrl;
-    private long id;
+    public long id;
 
     Episode[] episodes;
     Countdown countdown;

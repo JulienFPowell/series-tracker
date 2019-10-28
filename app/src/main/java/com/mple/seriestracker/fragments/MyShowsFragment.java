@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.mple.seriestracker.Countdown;
 import com.mple.seriestracker.R;
 import com.mple.seriestracker.ShowInfo;
 import com.mple.seriestracker.activity.HomeScreenActivity;
@@ -27,7 +28,12 @@ import java.util.List;
 public class MyShowsFragment extends Fragment {
 
     List<ShowInfo> mShowsList = new ArrayList<>();
-    List<Integer> mSelectedItems = new ArrayList<>();
+
+    public List<Integer> getmSelectedItems() {
+        return mSelectedItems;
+    }
+
+    public List<Integer> mSelectedItems = new ArrayList<>();
     GridView mGridView;
     GridViewAdapter mAdapter;
 
@@ -52,9 +58,9 @@ public class MyShowsFragment extends Fragment {
         }
 
         for (ShowInfo showInfo : showInfos) {
-            if(mShowsList.removeIf(n -> n.id == showInfo.id)){ // && EpisodeTrackDatabase.INSTANCE.deleteShow(showInfo.id);
-                //Should also call EpisodeTrackDatabase.INSTANCE.deleteShow(showInfo.id);
-                //After everything works smooth
+            if(mShowsList.removeIf(n -> n.id == showInfo.id)){
+                EpisodeTrackDatabase.INSTANCE.deleteShow(showInfo.id);
+
             }
         }
         mSelectedItems.clear();
@@ -62,17 +68,11 @@ public class MyShowsFragment extends Fragment {
         mAdapter.notifyDataSetChanged();
     }
 
+
     public void addShow(ShowInfo showInfo){
         mShowsList.add(showInfo);
 //        selected = new boolean[mShowsList.size()]; //update size of
         updateAdapter();
-    }
-
-    //Used for deleting the show from the adapter.
-    public void removeShow(long showID){
-        mShowsList.removeIf(info -> info.id == showID);
-        updateAdapter();
-        EpisodeTrackDatabase.INSTANCE.deleteShow(showID);
     }
 
     private void updateAdapter(){
@@ -148,7 +148,6 @@ public class MyShowsFragment extends Fragment {
                     }else{
                         HomeScreenActivity.deleteButton.hide();
                     }
-
                     return false;
                 }
             });

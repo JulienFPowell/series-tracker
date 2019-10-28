@@ -17,6 +17,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.jakewharton.threetenabp.AndroidThreeTen;
+import com.mple.seriestracker.IDeleteShow;
 import com.mple.seriestracker.R;
 import com.mple.seriestracker.ShowInfo;
 import com.mple.seriestracker.ShowTracker;
@@ -35,7 +36,7 @@ import java.util.List;
 import retrofit2.Response;
 
 
-public class HomeScreenActivity extends AppCompatActivity {
+public class HomeScreenActivity extends AppCompatActivity implements IDeleteShow {
 
     static final int NEW_SHOW_REQUEST_CODE = 1;
     static final int FILE_PERMISSION_RREQUEST_CODE = 1;
@@ -47,9 +48,6 @@ public class HomeScreenActivity extends AppCompatActivity {
     boolean started = false;
 
     //TODO sort the countdown tab based on time (sorta works but some weird threading stuff screwing it up)
-    //TODO add delete button to delete shows (holding on image already has checkboxes implemented)
-    //TODO Crashes upon launch when put on an actual phone
-    //TODO Decide which permissions we actually need
     //All done after that
     public static FloatingActionButton deleteButton;
     @Override
@@ -61,6 +59,10 @@ public class HomeScreenActivity extends AppCompatActivity {
         //Sets all date time stuff to correct sync
         AndroidThreeTen.init(this);
 
+        if (!hasFilePermissions()) {
+            askForPermission();
+        }
+
         //Initialize fragments
         mSectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         mViewPager = findViewById(R.id.view_pager);
@@ -70,13 +72,7 @@ public class HomeScreenActivity extends AppCompatActivity {
 
         //Initialize floating menu button
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener((View view) ->{
-            if (hasFilePermissions()){
-                askForPermission();
-        }
-            else{
-                startSearchIntent();
-        }});
+        fab.setOnClickListener((View view) -> startSearchIntent());
 
         //Initialize delete button
         deleteButton = findViewById(R.id.deleteButton);
@@ -84,6 +80,12 @@ public class HomeScreenActivity extends AppCompatActivity {
         //Deletes all selected items from the "my shows" tab
         //TODO Also delete items from the countdown tab too
         deleteButton.setOnClickListener((View) -> {
+            List<Integer> selectedItems =  ((MyShowsFragment)mSectionsPagerAdapter.getItem(0)).getmSelectedItems();
+
+            int positionToDelete = selectedItems.get(0);
+            ((CountdownFragment) mSectionsPagerAdapter.getItem(1)).removeShow(positionToDelete);
+
+            //(CountdownFragment.RecyclerViewAdapter.removeShow());
             ((MyShowsFragment)mSectionsPagerAdapter.getItem(0)).deleteSelected();
         });
     }
@@ -115,7 +117,7 @@ public class HomeScreenActivity extends AppCompatActivity {
     //Adds a show to the "my shows" tab
     public void addShow(ShowInfo showInfo){
         new TvShowTask().execute(showInfo); //Background task to get info from the api
-        EpisodeTrackDatabase.INSTANCE.addShow(showInfo.name,showInfo.imagePath,showInfo.id); //Add the show to the database
+        //EpisodeTrackDatabase.INSTANCE.addShow(showInfo.name,showInfo.imagePath,showInfo.id); //Add the show to the database
         ((MyShowsFragment)mSectionsPagerAdapter.getItem(0)).addShow(showInfo); //Adds it to the fragment, fragment will then automatically update it
     }
 
@@ -137,6 +139,11 @@ public class HomeScreenActivity extends AppCompatActivity {
             ShowTracker.INSTANCE.addedShowsCache.add(showInfo.id);
             addShow(showInfo);
         }
+    }
+
+    @Override
+    public void deleteShow(int showId) {
+
     }
 
     class LoadShowsTask extends AsyncTask<String,Void,String>{
@@ -209,7 +216,7 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     //Will be used for writing saved data, later on to keep track of what shows are saved
     boolean hasFilePermissions(){
-        return (ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED);
+        return (ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
     }
 
     void askForPermission(){

@@ -45,7 +45,6 @@ public class CountdownFragment extends Fragment {
         return view;
     }
 
-
     public void addCountdown(long showID){
         //Add it to the list
         mTvShowList.add(ShowTracker.INSTANCE.getTvShow(showID));
@@ -54,6 +53,7 @@ public class CountdownFragment extends Fragment {
         //Tell adapter to refresh changes
         mRecyclerViewAdapter.notifyDataSetChanged();
         //sortByTime(); // re-sort by time
+        //removeShow(showID);
     }
 
     //Sort each item by time, one with least time should go to the top
@@ -67,6 +67,14 @@ public class CountdownFragment extends Fragment {
         });
         mRecyclerViewAdapter.notifyDataSetChanged();
     }
+
+    //Used for deleting the show from the adapter.
+    public void removeShow(int position){
+        mTvShowList.remove(position);
+        mRecyclerViewAdapter.notifyDataSetChanged();
+    }
+
+
 
     class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder>{
 
@@ -88,12 +96,14 @@ public class CountdownFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
-
             Handler handler=new Handler();
             handler.post(new Runnable(){
                 @Override
                 public void run() {
                     //populate the textviews with the messages
+                    if(position >= tvShowsList.size()) {
+                        return;
+                    }
                     TvShow tvShow = tvShowsList.get(position);
                     holder.textViewTitle.setText(tvShow.getName());
                     Countdown countdown = tvShow.getCountdown(); //need to get the new countdown each loop
@@ -103,7 +113,6 @@ public class CountdownFragment extends Fragment {
                     if(text.equals("")){
                        Countdown newCountdown =  CountdownUtil.getUpcomingAiringEp(tvShow.getEpisodes(),countdown.getEpisode(),countdown.getSeason());
                        if(newCountdown != null){
-                           //TODO Read bottom comment
                            tvShow.setCountdown(newCountdown);
 //                           sortByTime();
                        }else{
@@ -121,13 +130,10 @@ public class CountdownFragment extends Fragment {
                 }
             });
         }
-
-
         @Override
         public int getItemCount() {
             return mTvShowList.size();
         }
-
     }
 
     class RecyclerViewHolder extends RecyclerView.ViewHolder{
