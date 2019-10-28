@@ -43,6 +43,7 @@ public class CountdownFragment extends Fragment {
         mRecyclerViewAdapter = new RecyclerViewAdapter(getContext(), mTvShowList);
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        setRetainInstance(true);
         return view;
     }
 

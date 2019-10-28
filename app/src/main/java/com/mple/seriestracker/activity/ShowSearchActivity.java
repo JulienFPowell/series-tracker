@@ -46,6 +46,8 @@ public class ShowSearchActivity extends AppCompatActivity {
         episodate = Episodate.INSTANCE;
         searchView = findViewById(R.id.searchView);
         recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
@@ -173,7 +175,6 @@ public class ShowSearchActivity extends AppCompatActivity {
             }
             RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(getApplicationContext(),list);
             recyclerView.setAdapter(recyclerViewAdapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         }
     }
 

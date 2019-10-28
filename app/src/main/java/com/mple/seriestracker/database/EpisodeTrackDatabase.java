@@ -106,8 +106,10 @@ public class EpisodeTrackDatabase extends DatabaseHelper{
         db = getReadableDatabase();
         Cursor cursor = db.rawQuery(sql,null);
         cursor.moveToFirst();
+        int count = cursor.getCount();
         cursor.close();
-        return cursor.getCount() > 0;
+        db.close();
+        return count > 0;
     }
 
     //Adds the show to the database
@@ -115,6 +117,7 @@ public class EpisodeTrackDatabase extends DatabaseHelper{
     public void addShow(String name, String photo,long showID){
         db = getWritableDatabase();
         if(showExists(showID)){
+            db.close();
             return;
         }
 
